@@ -16,4 +16,7 @@ public interface DepartmentDao {
     @UseRowMapper(DepartamentMapper.class)
     Departament getDepartmentById(String id);
 
+    @SqlQuery("SELECT * FROM Departamento WHERE upper(Nombre) like upper(CONCAT(?, '%'))")
+    @UseRowMapper(DepartamentMapper.class)
+    List<Departament> getDepartmentByName(String name);
 }

@@ -15,4 +15,12 @@ public interface ProjectDao {
     @UseRowMapper(ProjectMapper.class)
     Project getProjectById(String id);
 
+    @SqlQuery("SELECT * FROM Proyecto WHERE Id_Usuario = ?")
+    @UseRowMapper(ProjectMapper.class)
+    Project getProjectByUserId(String id_user);
+
+    @SqlQuery("SELECT * FROM Proyecto WHERE Nombre = ?")
+    @UseRowMapper(ProjectMapper.class)
+    Project getProjectByName(String name);
+
 }
