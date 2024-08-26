@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.shezcode.taskMan.dao.Database;
 import com.shezcode.taskMan.dao.DepartmentDao;
 import com.shezcode.taskMan.domain.Departament;
-import com.shezcode.taskMan.utils.CorsHeaders;
 import com.shezcode.taskMan.utils.LocalDateAdapter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -28,7 +27,6 @@ public class DepartmentServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        CorsHeaders.setCorsHeaders(response);
 
         String id;
         String name;
@@ -84,11 +82,6 @@ public class DepartmentServlet extends HttpServlet {
             response.getWriter().write("{\"error\": \"Unable to retrieve data.\"}");
         }
     }
-    @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Handle preflight request
-        CorsHeaders.setCorsHeaders(response);
-        response.setStatus(HttpServletResponse.SC_OK);
-    }
+
 }
 

@@ -22,14 +22,12 @@ public class UserMapper implements RowMapper<User> {
         Date sqlDate = rs.getDate("Fe_alta");
         LocalDate feAlta = sqlDate != null ? sqlDate.toLocalDate() : null;
 
-
-        Departament departament= Database.jdbi.withExtension(DepartmentDao.class, dao -> dao.getDepartmentById(rs.getString("Id_Departamento")));
         return new User(
                 rs.getString("Id_Usuario"),
                 rs.getString("Nombre"),
                 rs.getString("Email"),
                 rs.getString("Password"),
                 feAlta,
-                departament);
+                rs.getString("Id_Departamento"));
     }
 }

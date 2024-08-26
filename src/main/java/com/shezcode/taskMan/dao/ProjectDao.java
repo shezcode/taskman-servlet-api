@@ -2,6 +2,7 @@ package com.shezcode.taskMan.dao;
 
 import com.shezcode.taskMan.domain.Project;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowMapper;
 
 import java.util.List;
@@ -23,4 +24,7 @@ public interface ProjectDao {
     @UseRowMapper(ProjectMapper.class)
     Project getProjectByName(String name);
 
+    @SqlUpdate("DELETE FROM Proyecto WHERE Id_Proyecto = ?")
+    @UseRowMapper(ProjectMapper.class)
+    int deleteProject(String id);
 }

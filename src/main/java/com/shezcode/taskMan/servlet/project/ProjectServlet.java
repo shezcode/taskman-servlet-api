@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shezcode.taskMan.dao.Database;
 import com.shezcode.taskMan.dao.ProjectDao;
-import com.shezcode.taskMan.dao.UserDao;
 import com.shezcode.taskMan.domain.Project;
-import com.shezcode.taskMan.domain.User;
-import com.shezcode.taskMan.utils.CorsHeaders;
 import com.shezcode.taskMan.utils.LocalDateAdapter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,11 +27,9 @@ public class ProjectServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        CorsHeaders.setCorsHeaders(response);
         response.setContentType("application/json");
 
         var out = response.getWriter();
-
 
         String id;
         String user_id;
@@ -103,10 +98,4 @@ public class ProjectServlet extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Handle preflight request
-        CorsHeaders.setCorsHeaders(response);
-        response.setStatus(HttpServletResponse.SC_OK);
-    }
 }

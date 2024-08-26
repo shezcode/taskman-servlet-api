@@ -14,7 +14,7 @@ public class User {
     private String Id_Usuario;
     private String Nombre;
     private String Email;
-    private transient String Password;
+    private String Password;
     private LocalDate Fe_alta;
-    private Departament departamento;
+    private String Id_Departamento;
 }

@@ -1,7 +1,9 @@
 package com.shezcode.taskMan.dao;
 
+import com.shezcode.taskMan.domain.Departament;
 import com.shezcode.taskMan.domain.User;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowMapper;
 
 import java.util.List;
@@ -28,8 +30,11 @@ public interface UserDao {
     @UseRowMapper(UserMapper.class)
     List<User> getUserByDep(String depName);
 
-    @SqlQuery("INSERT INTO Usuario (Nombre, Email, Password, Id_Departamento) VALUES (?, ?, ?, ?)")
+    @SqlUpdate("INSERT INTO Usuario (Nombre, Email, Password, Id_Departamento) VALUES (?, ?, ?, ?)")
     @UseRowMapper(UserMapper.class)
-    User saveUser(String nombre, String email, String password, UUID Id_Departamento);
+    int saveUser(String nombre, String email, String password, String id_Departamento);
 
+    @SqlQuery("SELECT * FROM Usuario where Email = ? AND Password = ?")
+    @UseRowMapper(UserMapper.class)
+    User loginUser(String email, String password);
 }

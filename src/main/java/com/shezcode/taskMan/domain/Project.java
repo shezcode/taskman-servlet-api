@@ -24,6 +24,6 @@ public class Project {
     private Estado Estado;
     private Prioridad Prioridad;
     private int Presupuesto;
-    private User usuario;
+    private String Id_Usuario;
 
 }

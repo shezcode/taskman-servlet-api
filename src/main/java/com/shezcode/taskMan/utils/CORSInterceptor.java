@@ -12,8 +12,7 @@ import java.io.IOException;
 public class CORSInterceptor implements Filter {
 
     private static final String[] allowedOrigins = {
-            "http://localhost:3000", "http://localhost:5500", "http://localhost:5501",
-            "http://127.0.0.1:3000", "http://127.0.0.1:5500", "http://127.0.0.1:5501"
+            "http://localhost:3000"
     };
 
     @Override
@@ -24,19 +23,20 @@ public class CORSInterceptor implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         // Get the Origin header
-        String requestOrigin = request.getHeader("Origin");
+        String origin = request.getHeader("Origin");
 
         // Check if the Origin header is present and valid
-        if (requestOrigin != null && isAllowedOrigin(requestOrigin)) {
+        if (origin != null && origin.equals("http://localhost:3000")) {
             // Authorize the origin, all headers, and all methods
-            response.addHeader("Access-Control-Allow-Origin", requestOrigin);
+            response.addHeader("Access-Control-Allow-Origin", origin);
             response.addHeader("Access-Control-Allow-Headers", "*");
             response.addHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST, DELETE");
             response.addHeader("Access-Control-Allow-Credentials", "true");
 
-            // CORS handshake (pre-flight request)
-            if (request.getMethod().equalsIgnoreCase("OPTIONS")) {
-                response.setStatus(HttpServletResponse.SC_ACCEPTED);
+
+            // Handle preflight (OPTIONS) requests
+            if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+                response.setStatus(HttpServletResponse.SC_OK);
                 return;
             }
         }

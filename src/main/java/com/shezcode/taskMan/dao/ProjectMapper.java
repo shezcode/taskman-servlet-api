@@ -48,6 +48,6 @@ public class ProjectMapper implements RowMapper<Project> {
                 estado,
                 prioridad,
                 rs.getInt("Presupuesto"),
-                user);
+                rs.getString("Id_Usuario"));
     }
 }
