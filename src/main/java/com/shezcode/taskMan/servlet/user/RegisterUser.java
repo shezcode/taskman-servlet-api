@@ -1,5 +1,7 @@
 package com.shezcode.taskMan.servlet.user;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -21,6 +23,8 @@ import java.time.LocalDate;
 
 @WebServlet("/register")
 public class RegisterUser extends HttpServlet {
+
+    private static final Logger logger = Logger.getLogger(RegisterUser.class.getName());
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -60,6 +64,8 @@ public class RegisterUser extends HttpServlet {
             User doesExist = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUserByEmail(finalUser.getEmail()));
             String password = finalUser.getPassword();
             String hashedPassword = PasswordEncryption.encryptPassword(password);
+            logger.log(Level.INFO, "Given password is: " + password);
+            logger.log(Level.INFO, "Hashed password is: " + hashedPassword);
 
             if (doesExist == null) {
                 int dbReturn = Database.jdbi.withExtension(UserDao.class,

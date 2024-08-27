@@ -18,44 +18,34 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 @WebServlet("/login")
 public class LoginUser extends HttpServlet {
 
+    private static final Logger logger = Logger.getLogger(RegisterUser.class.getName());
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        BufferedReader reader = request.getReader();
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
 
-       // StringBuilder jsonBuilder = new StringBuilder();
-       // String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
+        }
 
-       // // Read and build JSON body from request
-       // try (BufferedReader reader = request.getReader()) {
-       //     while ((line = reader.readLine()) != null) {
-       //         jsonBuilder.append(line);
-       //     }
-       // }
+        String requestBody = jsonBuilder.toString();
+        Gson gson = new Gson();
+        Map<String, String> requestBodyMap = gson.fromJson(requestBody, Map.class);
 
-       // Gson gson = new GsonBuilder()
-       //         .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-       //         .create();
-
-       // try {
-       //     // Deserialize JSON request to User object
-       //     user = gson.fromJson(jsonBuilder.toString(), User.class);
-       // } catch (JsonSyntaxException e) {
-       //     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);  // 400 Bad Request
-       //     response.getWriter().write("{\"error\": \"Invalid JSON format.\"}");
-       //     return;
-       // }
-
-
+        String email = requestBodyMap.get("Email");
+        String password = requestBodyMap.get("Password");
         // Database operations
         try {
             Database.connect();
@@ -64,7 +54,13 @@ public class LoginUser extends HttpServlet {
             User doesExist = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUserByEmail(email));
 
             if (doesExist != null) {
+                logger.log(Level.INFO, "login password attempt with: " + password);
+                logger.log(Level.INFO, "Stored password is : " + doesExist.getPassword());
+
                 boolean passwordMatch = PasswordEncryption.checkPassword(password, doesExist.getPassword());
+
+                logger.log(Level.INFO, "Password match is: " + passwordMatch);
+
                 if (passwordMatch){
                     Database.jdbi.withExtension(UserDao.class,
                             dao -> dao.loginUser(doesExist.getEmail(), doesExist.getPassword()));
