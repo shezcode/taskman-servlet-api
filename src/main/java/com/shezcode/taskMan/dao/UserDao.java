@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserDao {
-    @SqlQuery("SELECT * FROM Usuario")
+    @SqlQuery("SELECT * FROM Usuario ORDER BY Fe_alta DESC")
     @UseRowMapper(UserMapper.class)
     List<User> getAllUsers();
 

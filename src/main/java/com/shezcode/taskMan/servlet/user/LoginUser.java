@@ -64,7 +64,9 @@ public class LoginUser extends HttpServlet {
                 if (passwordMatch){
                     Database.jdbi.withExtension(UserDao.class,
                             dao -> dao.loginUser(doesExist.getEmail(), doesExist.getPassword()));
+
                     response.setStatus(HttpServletResponse.SC_OK);
+
                     response.getWriter().write("{\"message\": \"Login correcto.\"}");
                 } else {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  // 401
