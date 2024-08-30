@@ -45,8 +45,8 @@ public class ProjectMapper implements RowMapper<Project> {
                 feActualizacion,
                 feInicio,
                 feFin,
-                estado,
-                prioridad,
+                estado.toString(),
+                prioridad.toString(),
                 rs.getInt("Presupuesto"),
                 rs.getString("Id_Usuario"));
     }

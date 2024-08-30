@@ -21,8 +21,8 @@ public class Project {
     private LocalDate Fe_actualizacion;
     private LocalDate Fe_inicio;
     private LocalDate Fe_fin;
-    private Estado Estado;
-    private Prioridad Prioridad;
+    private String Estado;
+    private String Prioridad;
     private int Presupuesto;
     private String Id_Usuario;
 

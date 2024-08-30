@@ -1,10 +1,13 @@
 package com.shezcode.taskMan.dao;
 
 import com.shezcode.taskMan.domain.Project;
+import com.shezcode.taskMan.utils.Estado;
+import com.shezcode.taskMan.utils.Prioridad;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ProjectDao {
@@ -27,4 +30,12 @@ public interface ProjectDao {
     @SqlUpdate("DELETE FROM Proyecto WHERE Id_Proyecto = ?")
     @UseRowMapper(ProjectMapper.class)
     int deleteProject(String id);
+
+    @SqlUpdate("INSERT INTO Proyecto (Nombre, Descripcion, Fe_inicio, Fe_fin, Estado, Prioridad, Presupuesto, Id_Usuario) VALUES (?, ?, ?, ?, ?, ?, ?)")
+    @UseRowMapper(ProjectMapper.class)
+    int createProject(String Nombre, String Descripcion, LocalDate Fe_inicio, LocalDate Fe_fin, String Estado, String Prioridad, int Presupuesto, String Id_Usuario);
+
+    @SqlUpdate("UPDATE Proyecto SET Nombre = ?, Descripcion = ?, Fe_inicio = ?, Fe_fin = ?, Estado = ?, Prioridad = ?, Presupuesto = ? WHERE Id_Proyecto = ?")
+    @UseRowMapper(ProjectMapper.class)
+    int modifyProject(String nombre, String Descripcion, LocalDate Fe_inicio, LocalDate Fe_fin, String Estado, String Prioridad, int Presupuesto, String Id_Proyecto);
 }
