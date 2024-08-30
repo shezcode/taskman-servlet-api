@@ -22,9 +22,9 @@ public interface UserDao {
     @UseRowMapper(UserMapper.class)
     User getUserByEmail(String email);
 
-    @SqlQuery("SELECT * FROM Usuario where Nombre = ?")
+    @SqlQuery("SELECT * FROM Usuario where upper(Nombre) like upper(CONCAT(?, '%'))")
     @UseRowMapper(UserMapper.class)
-    User getUserByName(String name);
+    List<User> getUserByName(String name);
 
     @SqlQuery("SELECT * FROM Usuario where Id_Departamento = (SELECT Id_Departamento FROM Departamento WHERE Nombre = ?)")
     @UseRowMapper(UserMapper.class)

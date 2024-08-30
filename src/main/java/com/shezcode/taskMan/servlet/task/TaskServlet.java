@@ -3,7 +3,9 @@ package com.shezcode.taskMan.servlet.task;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shezcode.taskMan.dao.Database;
+import com.shezcode.taskMan.dao.ProjectDao;
 import com.shezcode.taskMan.dao.TaskDao;
+import com.shezcode.taskMan.domain.Project;
 import com.shezcode.taskMan.domain.Task;
 import com.shezcode.taskMan.utils.LocalDateAdapter;
 import jakarta.servlet.ServletException;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "getAllTasks", urlPatterns = {"/getAllTasks"})
 public class TaskServlet extends HttpServlet {
@@ -30,12 +33,41 @@ public class TaskServlet extends HttpServlet {
 
         var out = response.getWriter();
 
+        String id;
+
+        if (request.getParameter("id") != null){
+            id = request.getParameter("id");
+        } else {
+            id = "";
+        }
+
         try {
+
             Database.connect();
 
-            List<Task> tasks = Database.jdbi.withExtension(TaskDao.class, TaskDao::getAllTasks);
+            Map<String, String[]> parameterMap = request.getParameterMap();
 
-            response.getWriter().print(gson.toJson(tasks));
+            if (parameterMap.size() > 1){
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Error
+                response.getWriter().write("{\"error\": \"Too many params.\"}");
+                out.close();
+            }
+
+            if (parameterMap.isEmpty()){
+                List<Task> tasks = Database.jdbi.withExtension(TaskDao.class, TaskDao::getAllTasks);
+                response.getWriter().print(gson.toJson(tasks));
+            }
+
+            Task task = null;
+
+            if (!id.isEmpty()){
+                task = Database.jdbi.withExtension(TaskDao.class, dao -> dao.getTaskById(id));
+            }
+
+            if (task != null){
+                response.getWriter().print(gson.toJson(task));
+            }
+
             response.setStatus(HttpServletResponse.SC_OK);  // 200 OK
             out.flush();
             out.close();

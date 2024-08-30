@@ -40,8 +40,8 @@ public class TaskMapper implements RowMapper<Task> {
                 rs.getString("Asignada_a_Id_Usuario"),
                 feCreacion,
                 feLimite,
-                estado,
-                prioridad,
+                estado.toString(),
+                prioridad.toString(),
                 rs.getString("Id_Proyecto"));
     }
 }

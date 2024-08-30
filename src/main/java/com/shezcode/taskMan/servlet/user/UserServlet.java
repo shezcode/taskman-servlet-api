@@ -80,7 +80,8 @@ public class UserServlet extends HttpServlet {
             User user = null;
 
             if (!name.isEmpty()){
-                user = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUserByName(name));
+                List<User> users = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUserByName(name));
+                response.getWriter().print(gson.toJson(users));
             }
 
             if (!email.isEmpty()){

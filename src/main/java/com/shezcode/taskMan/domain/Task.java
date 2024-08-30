@@ -18,8 +18,8 @@ public class Task {
     private String Asignada_a_Id_Usuario;
     private LocalDate Fe_creacion;
     private LocalDate Fe_limite;
-    private Estado estado;
-    private Prioridad prioridad;
+    private String Estado;
+    private String Prioridad;
     private String Id_Proyecto;
 }
 
