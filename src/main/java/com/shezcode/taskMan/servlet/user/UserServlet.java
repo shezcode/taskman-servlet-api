@@ -85,7 +85,8 @@ public class UserServlet extends HttpServlet {
             }
 
             if (!email.isEmpty()){
-                user = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUserByEmail(email));
+                List<User> users = Database.jdbi.withExtension(UserDao.class, dao -> dao.getMultipleUsersByEmail(email));
+                response.getWriter().print(gson.toJson(users));
             }
 
             if (!user_id.isEmpty()){
@@ -104,12 +105,11 @@ public class UserServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_OK);  // 200 OK
             out.flush();
             out.close();
+            Database.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Error
             response.getWriter().write("{\"error\": \"Unable to retrieve data.\"}");
         }
     }
-
-
 }

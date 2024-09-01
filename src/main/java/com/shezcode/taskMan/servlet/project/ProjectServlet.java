@@ -91,6 +91,8 @@ public class ProjectServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_OK);  // 200 OK
             out.flush();
             out.close();
+
+            Database.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Error

@@ -19,7 +19,7 @@ public class Database {
         db = jdbi.open();
     }
 
-    public void close() throws SQLException {
+    public static void close() throws SQLException {
         db.close();
     }
 }

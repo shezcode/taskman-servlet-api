@@ -65,7 +65,7 @@ public class ModifyTask extends HttpServlet {
 
             Task task = Database.jdbi.withExtension(TaskDao.class, dao -> dao.getTaskById(id));
             if (task != null) {
-                int updatedRows = Database.jdbi.withExtension(TaskDao.class, dao -> dao.modifyTask(taskData.getNombre(), taskData.getDescripcion(), taskData.getFe_limite(), taskData.getAsignada_a_Id_Usuario(), taskData.getEstado() ,taskData.getPrioridad(), taskData.getId_Tarea()));
+                int updatedRows = Database.jdbi.withExtension(TaskDao.class, dao -> dao.modifyTask(taskData.getNombre(), taskData.getDescripcion(), taskData.getFe_limite(), taskData.getAsignada_a_Id_Usuario(), taskData.getEstado() ,taskData.getPrioridad(), taskData.getId_Proyecto(), taskData.getId_Tarea()));
                 if (updatedRows == 1) {
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("{\"message\": \"Tarea modificada.\"}");
@@ -77,6 +77,7 @@ public class ModifyTask extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);  // 401
                 response.getWriter().write("{\"error\": \"Tarea no encontrada.\"}");
             }
+            Database.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Internal Server Error

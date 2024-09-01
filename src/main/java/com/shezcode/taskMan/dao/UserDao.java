@@ -26,12 +26,15 @@ public interface UserDao {
     @UseRowMapper(UserMapper.class)
     List<User> getUserByName(String name);
 
-    @SqlQuery("SELECT * FROM Usuario where Id_Departamento = (SELECT Id_Departamento FROM Departamento WHERE Nombre = ?)")
+    @SqlQuery("SELECT * FROM Usuario where upper(Email) LIKE upper(CONCAT(?, '%'))")
+    @UseRowMapper(UserMapper.class)
+    List<User> getMultipleUsersByEmail(String email);
+
+    @SqlQuery("SELECT * FROM Usuario where Id_Departamento = (SELECT Id_Departamento FROM Departamento WHERE upper(Nombre) LIKE upper(CONCAT(?, '%')))")
     @UseRowMapper(UserMapper.class)
     List<User> getUserByDep(String depName);
 
     @SqlUpdate("INSERT INTO Usuario (Nombre, Email, Password, Id_Departamento) VALUES (?, ?, ?, ?)")
-    @UseRowMapper(UserMapper.class)
     int saveUser(String nombre, String email, String password, String id_Departamento);
 
     @SqlQuery("SELECT * FROM Usuario where Email = ? AND Password = ?")

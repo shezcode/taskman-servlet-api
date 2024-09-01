@@ -48,6 +48,8 @@ public class DeleteTarea extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);  // 401
                 response.getWriter().write("{\"error\": \"Tarea no encontrada.\"}");
             }
+
+            Database.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Internal Server Error

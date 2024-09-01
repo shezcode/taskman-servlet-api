@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 @WebServlet("/login")
 public class LoginUser extends HttpServlet {
 
-    private static final Logger logger = Logger.getLogger(RegisterUser.class.getName());
+    private static final Logger logger = Logger.getLogger(LoginUser.class.getName());
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
@@ -76,6 +76,7 @@ public class LoginUser extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  // 409 Conflict
                 response.getWriter().write("{\"error\": \"Usuario no encontrado con este correo.\"}");
             }
+            Database.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Internal Server Error

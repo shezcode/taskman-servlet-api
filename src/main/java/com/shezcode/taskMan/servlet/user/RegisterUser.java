@@ -79,6 +79,7 @@ public class RegisterUser extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_CONFLICT);  // 409 Conflict
                 response.getWriter().write("{\"error\": \"Usuario ya registrado con el mismo correo.\"}");
             }
+            Database.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Internal Server Error

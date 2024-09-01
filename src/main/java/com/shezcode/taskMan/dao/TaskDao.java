@@ -21,15 +21,20 @@ public interface TaskDao {
     @UseRowMapper(TaskMapper.class)
     Task getTaskById(String id);
 
-    @SqlUpdate("DELETE FROM Tarea WHERE Id_Tarea = ?")
+    @SqlQuery("SELECT * FROM Tarea where upper(Nombre) LIKE upper(CONCAT(?, '%'))")
     @UseRowMapper(TaskMapper.class)
+    List<Task> getTasksByName(String name);
+
+    @SqlQuery("SELECT * FROM Tarea where Id_Proyecto IN (SELECT Id_Proyecto FROM Proyecto WHERE upper(Nombre) LIKE upper(CONCAT(?, '%')))")
+    @UseRowMapper(TaskMapper.class)
+    List<Task> getTasksByProjectName(String proyecto);
+
+    @SqlUpdate("DELETE FROM Tarea WHERE Id_Tarea = ?")
     int deleteTask(String id);
 
-    @SqlUpdate("UPDATE Tarea SET Nombre = ?, Descripcion = ?, Fe_limite = ?, Asignada_a_Id_Usuario = ?, Estado = ?, Prioridad = ? WHERE Id_Tarea = ?")
-    @UseRowMapper(TaskMapper.class)
-    int modifyTask(String nombre, String Descripcion, LocalDate Fe_limite, String Id_Usuario, String estado, String prioridad, String Id_Tarea);
+    @SqlUpdate("UPDATE Tarea SET Nombre = ?, Descripcion = ?, Fe_limite = ?, Asignada_a_Id_Usuario = ?, Estado = ?, Prioridad = ?, Id_Proyecto = ? WHERE Id_Tarea = ?")
+    int modifyTask(String nombre, String Descripcion, LocalDate Fe_limite, String Id_Usuario, String estado, String prioridad, String Id_Proyecto, String Id_Tarea);
 
     @SqlUpdate("INSERT INTO Tarea (Nombre, Descripcion, Asignada_a_Id_Usuario, Fe_limite, Estado, Prioridad, Id_Proyecto) VALUES (?, ?, ?, ?, ?, ?, ?)")
-    @UseRowMapper(TaskMapper.class)
     int createTask(String Nombre, String Descripcion, String Asignada_a_Id_Usuario, LocalDate Fe_limite, String Estado, String Prioridad, String Id_Proyecto);
 }

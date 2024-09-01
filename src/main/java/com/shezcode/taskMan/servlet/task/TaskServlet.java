@@ -34,11 +34,25 @@ public class TaskServlet extends HttpServlet {
         var out = response.getWriter();
 
         String id;
+        String name;
+        String proyecto;
 
         if (request.getParameter("id") != null){
             id = request.getParameter("id");
         } else {
             id = "";
+        }
+
+        if (request.getParameter("proyecto") != null){
+            proyecto = request.getParameter("proyecto");
+        } else {
+            proyecto = "";
+        }
+
+        if (request.getParameter("name") != null){
+            name = request.getParameter("name");
+        } else {
+            name = "";
         }
 
         try {
@@ -64,6 +78,17 @@ public class TaskServlet extends HttpServlet {
                 task = Database.jdbi.withExtension(TaskDao.class, dao -> dao.getTaskById(id));
             }
 
+            if (!proyecto.isEmpty()){
+                List<Task> tasks = Database.jdbi.withExtension(TaskDao.class, dao -> dao.getTasksByProjectName(proyecto));
+                response.getWriter().print(gson.toJson(tasks));
+            }
+
+            if (!name.isEmpty()){
+                List<Task> tasks = Database.jdbi.withExtension(TaskDao.class, dao -> dao.getTasksByName(name));
+                response.getWriter().print(gson.toJson(tasks));
+            }
+
+
             if (task != null){
                 response.getWriter().print(gson.toJson(task));
             }
@@ -71,6 +96,7 @@ public class TaskServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_OK);  // 200 OK
             out.flush();
             out.close();
+            Database.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Error

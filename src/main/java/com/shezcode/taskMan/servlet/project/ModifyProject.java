@@ -19,10 +19,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 @WebServlet("/modifyProject")
 public class ModifyProject extends HttpServlet {
+
+    private static final Logger logger = Logger.getLogger(CreateProject.class.getName());
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
@@ -54,6 +58,8 @@ public class ModifyProject extends HttpServlet {
         try {
             // Deserialize JSON request to User object
             project = gson.fromJson(jsonBuilder.toString(), Project.class);
+
+            logger.log(Level.INFO, project.toString());
         } catch (JsonSyntaxException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);  // 400 Bad Request
             response.getWriter().write("{\"error\": \"Invalid JSON format.\"}");
@@ -62,12 +68,11 @@ public class ModifyProject extends HttpServlet {
 
 
         try {
-
             Database.connect();
 
             Project projectDb= Database.jdbi.withExtension(ProjectDao.class, dao -> dao.getProjectById(id));
             if (projectDb != null) {
-                int updatedRows = Database.jdbi.withExtension(ProjectDao.class, dao -> dao.modifyProject(projectDb.getNombre(), projectDb.getDescripcion(), projectDb.getFe_inicio(), projectDb.getFe_fin(), projectDb.getEstado(), projectDb.getPrioridad(), projectDb.getPresupuesto(), projectDb.getId_Proyecto()));
+                int updatedRows = Database.jdbi.withExtension(ProjectDao.class, dao -> dao.modifyProject(project.getNombre(), project.getDescripcion(), project.getFe_inicio(), project.getFe_fin(), project.getEstado(), project.getPrioridad(), project.getPresupuesto(), project.getId_Proyecto()));
                 if (updatedRows == 1) {
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.getWriter().write("{\"message\": \"Proyecto modificado.\"}");
@@ -79,6 +84,8 @@ public class ModifyProject extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);  // 401
                 response.getWriter().write("{\"error\": \"Proyecto no encontrado.\"}");
             }
+
+            Database.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Internal Server Error

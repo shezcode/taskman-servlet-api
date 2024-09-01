@@ -70,6 +70,8 @@ public class CreateTask extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_CONFLICT);
                 response.getWriter().write("{\"error\": \"Error al crear la tarea.\"}");
             }
+
+            Database.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Internal Server Error

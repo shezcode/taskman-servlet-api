@@ -30,10 +30,17 @@ public class DepartmentServlet extends HttpServlet {
 
         String id;
         String name;
+        String email;
         if (request.getParameter("name") != null){
             name = request.getParameter("name");
         } else {
             name = "";
+        }
+
+        if (request.getParameter("email") != null){
+            email = request.getParameter("email");
+        } else {
+            email = "";
         }
 
         if (request.getParameter("id") != null){
@@ -68,6 +75,11 @@ public class DepartmentServlet extends HttpServlet {
                 response.getWriter().print(gson.toJson(deps));
             }
 
+            if (!email.isEmpty()){
+                deps = Database.jdbi.withExtension(DepartmentDao.class, dao -> dao.getDepartmentByEmail(email));
+                response.getWriter().print(gson.toJson(deps));
+            }
+
             if (!id.isEmpty()){
                 dep = Database.jdbi.withExtension(DepartmentDao.class, dao -> dao.getDepartmentById(id));
                 response.getWriter().print(gson.toJson(dep));
@@ -76,6 +88,8 @@ public class DepartmentServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_OK);  // 200 OK
             out.flush();
             out.close();
+
+            Database.close();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);  // 500 Error
