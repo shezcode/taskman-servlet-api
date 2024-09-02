@@ -1,11 +1,10 @@
-package com.shezcode.taskMan.servlet.task;
+package com.shezcode.taskMan.servlet.user;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.shezcode.taskMan.dao.Database;
-import com.shezcode.taskMan.dao.TaskDao;
-import com.shezcode.taskMan.domain.Task;
+import com.shezcode.taskMan.dao.UserDao;
 import com.shezcode.taskMan.domain.User;
 import com.shezcode.taskMan.utils.LocalDateAdapter;
 import jakarta.servlet.ServletException;
@@ -19,8 +18,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-@WebServlet("/modifyTask")
-public class ModifyTask extends HttpServlet {
+@WebServlet("/modifyUser")
+public class ModifyUser extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
@@ -29,7 +28,7 @@ public class ModifyTask extends HttpServlet {
         String id = request.getParameter("id");
         if (id == null || id.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);  // 400 Bad Request
-            response.getWriter().write("{\"error\": \"Tarea ID is required.\"}");
+            response.getWriter().write("{\"error\": \"User ID is required.\"}");
             return;
         }
 
@@ -48,29 +47,30 @@ public class ModifyTask extends HttpServlet {
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .create();
 
-        Task taskData;
+        User user;
         try {
             // Deserialize JSON request to User object
-            taskData = gson.fromJson(jsonBuilder.toString(), Task.class);
+            user = gson.fromJson(jsonBuilder.toString(), User.class);
         } catch (JsonSyntaxException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);  // 400 Bad Request
             response.getWriter().write("{\"error\": \"Invalid JSON format.\"}");
             return;
         }
 
+
         try {
 
             Database.connect();
 
-            Task task = Database.jdbi.withExtension(TaskDao.class, dao -> dao.getTaskById(id));
-            if (task != null) {
-                int updatedRows = Database.jdbi.withExtension(TaskDao.class, dao -> dao.modifyTask(taskData.getNombre(), taskData.getDescripcion(), taskData.getFe_limite(), taskData.getAsignada_a_Id_Usuario(), taskData.getEstado() ,taskData.getPrioridad(), taskData.getId_Proyecto(), taskData.getId_Tarea()));
+            User userDb = Database.jdbi.withExtension(UserDao.class, dao -> dao.getUserById(id));
+            if (userDb != null) {
+                int updatedRows = Database.jdbi.withExtension(UserDao.class, dao -> dao.modifyUser(user.getNombre(), user.getEmail(), user.getId_Departamento(), user.getId_Usuario()));
                 if (updatedRows == 1) {
                     response.setStatus(HttpServletResponse.SC_OK);
-                    response.getWriter().write("{\"message\": \"Tarea modificada.\"}");
+                    response.getWriter().write("{\"message\": \"Usuario modificado.\"}");
                 } else {
                     response.setStatus(HttpServletResponse.SC_CONFLICT);
-                    response.getWriter().write("{\"error\": \"Error al modificar la tarea.\"}");
+                    response.getWriter().write("{\"error\": \"Error al modificar el usuario.\"}");
                 }
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);  // 401
@@ -87,3 +87,4 @@ public class ModifyTask extends HttpServlet {
         }
     }
 }
+

@@ -6,6 +6,7 @@ import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.sqlobject.statement.UseRowMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,4 +41,8 @@ public interface UserDao {
     @SqlQuery("SELECT * FROM Usuario where Email = ? AND Password = ?")
     @UseRowMapper(UserMapper.class)
     User loginUser(String email, String password);
+
+
+    @SqlUpdate("UPDATE Usuario SET Nombre = ?, Email = ?, Id_Departamento = ? WHERE Id_Usuario = ?")
+    int modifyUser(String Nombre, String Email, String Id_Departamento, String Id_Usuario);
 }
